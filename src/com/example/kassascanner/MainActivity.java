@@ -2,6 +2,8 @@ package com.example.kassascanner;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -26,7 +28,7 @@ public class MainActivity extends Activity {
 	private Button scanBtn;
 	private TextView formatTxt, contentTxt;
 
-	private static String SERVER_IP = "145.37.76.63";
+	private static String SERVER_IP = "145.37.63.17";
 	private String EAN;
 	private Context context;
 	private ClientSender clientSender;
@@ -46,20 +48,22 @@ public class MainActivity extends Activity {
 		formatTxt = (TextView) findViewById(R.id.scan_format);
 		contentTxt = (TextView) findViewById(R.id.scan_content);
 		
-		context = this.getApplicationContext();
-        clientSender = new ClientSender(context);
+		//context = this.getApplicationContext();
+        //clientSender = new ClientSender(context);
         socket = null;
 
 		scanBtn.setOnClickListener(new OnClickListener() {
 
             @Override
             public void onClick(View v) {
-            	IntentIntegrator.initiateScan(act);
+            	System.out.println("Server messages");
             	
             	String messageToSend = "HOI";
 
-                new ClientSender(act).execute(messageToSend);
-
+            	//messageToSend = messageText.getText().toString() + System.getProperty("line.separator");
+        	    new ClientSender(MainActivity.this).execute(messageToSend);
+                
+            	IntentIntegrator.initiateScan(act);
             }
         });
 	}
@@ -100,8 +104,8 @@ public class MainActivity extends Activity {
         private Socket socket;
         private String answer;
         private Context context;
-        private BufferedWriter out;
-        private BufferedReader in;
+        private DataOutputStream out;
+        private DataInputStream in;
 
         public ClientSender(Context context) {
             this.context = context;
@@ -114,18 +118,23 @@ public class MainActivity extends Activity {
         protected Socket doInBackground(String... params) {
             try {
                 if (socket == null) {
-                    socket = new Socket(SERVER_IP, 21111);
+                    socket = new Socket(SERVER_IP, 8888);
+                    
+                    System.out.println("Server message: new socket");
 
-                    out = new BufferedWriter(
-                            new OutputStreamWriter(socket.getOutputStream()));
-                    in = new BufferedReader(
-                            new InputStreamReader(socket.getInputStream()));
+                    out = new DataOutputStream(
+    						socket.getOutputStream());
+                    in = new DataInputStream(socket.getInputStream());
                 }
-
-                out.write(params[0]);
+                
+                System.out.println("Server message: " + params[0] );
+                
+                out.writeUTF(params[0]);
                 out.flush();
 
-                answer = in.readLine() + System.getProperty("line.separator");
+                //answer = in.readLine() + System.getProperty("line.separator");
+                
+                answer = in.readUTF();
 
                 return socket;
             } catch (IOException e) {
