@@ -24,7 +24,8 @@ public class MainActivity extends Activity {
 	private Button scanBtn;
 	private TextView formatTxt, contentTxt;
 
-	private static String SERVER_IP = "145.37.63.17";
+	private static String SERVER_IP = "145.37.87.54";
+	private static int SERVER_PORT = 8888;
 	private Activity act;
 
 	@Override
@@ -96,7 +97,7 @@ public class MainActivity extends Activity {
 		protected Socket doInBackground(String... params) {
 			try {
 				if (socket == null) {
-					socket = new Socket(SERVER_IP, 8888);
+					socket = new Socket(SERVER_IP, SERVER_PORT);
 
 					System.out.println("Server message: new socket");
 
@@ -121,6 +122,10 @@ public class MainActivity extends Activity {
 
 		protected void onPostExecute(Socket socket) {
 			if (socket != null) {
+				if(answer.equals("continue")){
+					IntentIntegrator.initiateScan(act);
+				}
+				
 				//Toast.makeText(context, answer, Toast.LENGTH_LONG).show();
 
 			} else {
