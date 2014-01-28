@@ -24,7 +24,7 @@ public class MainActivity extends Activity {
 	private Button scanBtn;
 	private TextView formatTxt, contentTxt;
 
-	private static String SERVER_IP = "192.168.42.100";
+	private static String SERVER_IP = "145.37.57.40";
 	// LAST DIGIT IS COUNTER NUMBER!! -->
 	private static int SERVER_PORT = 8881;
 	private Activity act;
