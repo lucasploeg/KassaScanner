@@ -24,8 +24,9 @@ public class MainActivity extends Activity {
 	private Button scanBtn;
 	private TextView formatTxt, contentTxt;
 
-	private static String SERVER_IP = "145.37.87.54";
-	private static int SERVER_PORT = 8888;
+	private static String SERVER_IP = "192.168.42.100";
+	// LAST DIGIT IS COUNTER NUMBER!! -->
+	private static int SERVER_PORT = 8881;
 	private Activity act;
 
 	@Override
@@ -49,8 +50,7 @@ public class MainActivity extends Activity {
 	}
 
 	public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-		IntentResult scanningResult = IntentIntegrator.parseActivityResult(
-				requestCode, resultCode, intent);
+		IntentResult scanningResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
 
 		if (scanningResult != null) {
 			String scanContent = scanningResult.getContents();
@@ -58,20 +58,19 @@ public class MainActivity extends Activity {
 
 			formatTxt.setText("FORMAT: " + scanFormat);
 			contentTxt.setText("CONTENT: " + scanContent);
-			
+
 			System.out.println("Server messages");
 
 			String messageToSend = scanContent;
 
 			new ClientSender(MainActivity.this).execute(messageToSend);
-			
+
 		} else {
-			Toast toast = Toast.makeText(getApplicationContext(),
-					"No scan data received!", Toast.LENGTH_SHORT);
+			Toast toast = Toast.makeText(getApplicationContext(), "No scan data received!", Toast.LENGTH_SHORT);
 			toast.show();
 		}
 	}
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -122,15 +121,11 @@ public class MainActivity extends Activity {
 
 		protected void onPostExecute(Socket socket) {
 			if (socket != null) {
-				if(answer.equals("continue")){
+				if (answer.equals("continue")) {
 					IntentIntegrator.initiateScan(act);
 				}
-				
-				//Toast.makeText(context, answer, Toast.LENGTH_LONG).show();
-
 			} else {
-				Toast.makeText(context, "Can't connect to server!",
-						Toast.LENGTH_LONG).show();
+				Toast.makeText(context, "Can't connect to server!", Toast.LENGTH_LONG).show();
 			}
 		}
 	}
